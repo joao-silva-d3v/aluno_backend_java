@@ -4,26 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.aluno.aluno_backend.entities.Aluno;
-import com.aluno.aluno_backend.repositories.AlunoRepository;
+import com.aluno.aluno_backend.services.AlunoService;
 
 @RestController
 public class AlunoController {
-
       
       @Autowired
-      private AlunoRepository repository;
+      private AlunoService service;
 
-      @GetMapping("hello")
-      public String hello(){
-        return "Hello from Aluno Backend";
-      }
-
+     
       @GetMapping("students")
       public List<Aluno> getAlunos(){
-         return repository.findAll();
+         return service.getAlunos();
       }
     
 }
