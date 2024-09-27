@@ -44,7 +44,7 @@ public class AlunoService {
         aux.setName(aluno.getName());
         aux.setPeriod(aluno.getPeriod());
         aux.setActive(aluno.getActive());
-        repository.save(aluno);
+        repository.save(aux);
     }
     
 }
