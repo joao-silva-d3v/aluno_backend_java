@@ -13,6 +13,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+
+import com.aluno.aluno_backend.dtos.AlunoRequest;
 import com.aluno.aluno_backend.entities.Aluno;
 import com.aluno.aluno_backend.services.AlunoService;
 
@@ -34,7 +36,7 @@ public class AlunoController {
       }
    
       @PostMapping("students")
-      public ResponseEntity<Aluno> save(@RequestBody Aluno aluno){
+      public ResponseEntity<Aluno> save(@RequestBody AlunoRequest aluno){
             Aluno novoAluno = service.save(aluno);
 
             URI location = ServletUriComponentsBuilder
@@ -54,7 +56,7 @@ public class AlunoController {
       }
 
       @PutMapping("students/{id}")
-      public ResponseEntity<Void> update(@PathVariable int id, @RequestBody Aluno aluno){
+      public ResponseEntity<Void> update(@PathVariable int id, @RequestBody AlunoRequest aluno){
           service.update(id, aluno);
           return ResponseEntity.ok().build();
       }

@@ -3,7 +3,9 @@ package com.aluno.aluno_backend.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.aluno.aluno_backend.dtos.AlunoRequest;
 import com.aluno.aluno_backend.entities.Aluno;
+import com.aluno.aluno_backend.mappers.AlunoMapper;
 import com.aluno.aluno_backend.repositories.AlunoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -26,8 +28,8 @@ public class AlunoService {
         );
     }
 
-    public Aluno save(Aluno aluno){
-        return repository.save(aluno);
+    public Aluno save(AlunoRequest dtoRequestAluno){
+        return repository.save(AlunoMapper.toEntity(dtoRequestAluno));
     }
 
     public void deleteById(int id){
@@ -39,11 +41,11 @@ public class AlunoService {
         }
     }
 
-    public void update(int id, Aluno aluno){
+    public void update(int id, AlunoRequest dtoRequestAluno){
         Aluno aux = repository.getReferenceById(id);
-        aux.setName(aluno.getName());
-        aux.setPeriod(aluno.getPeriod());
-        aux.setActive(aluno.getActive());
+        aux.setName(dtoRequestAluno.name());
+        aux.setPeriod(dtoRequestAluno.period());
+        aux.setActive(dtoRequestAluno.active());
         repository.save(aux);
     }
     
