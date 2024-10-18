@@ -13,52 +13,57 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.aluno.aluno_backend.dtos.AlunoRequest;
+import com.aluno.aluno_backend.dtos.AlunoResponse;
 import com.aluno.aluno_backend.entities.Aluno;
 import com.aluno.aluno_backend.services.AlunoService;
 
 @RestController
 public class AlunoController {
-      
-      @Autowired
-      private AlunoService service;
 
-     
-      @GetMapping("students")
-      public ResponseEntity<List<Aluno>> getAlunos(){
-         return ResponseEntity.ok(service.getAlunos());
-      }
+    @Autowired
+    private AlunoService service;
+
+    @GetMapping("students")
+    public ResponseEntity<List<AlunoResponse>> getAlunos() {
+        List<AlunoResponse> alunos = service.getAlunos(); 
     
-      @GetMapping("students/{id}")
-      public ResponseEntity<Aluno> getAlunoById(@PathVariable int id){
-         return ResponseEntity.ok(service.getAlunoById(id));
-      }
-   
-      @PostMapping("students")
-      public ResponseEntity<Aluno> save(@RequestBody AlunoRequest aluno){
-            Aluno novoAluno = service.save(aluno);
+        List<AlunoResponse> alunoResponses = alunos.stream()
+            .map(aluno -> new AlunoResponse(aluno.getId(), aluno.name(), aluno.active(), aluno.period())) 
+            .collect(Collectors.toList());
+        
+        return ResponseEntity.ok(alunoResponses);
+    }
 
-            URI location = ServletUriComponentsBuilder
-                           .fromCurrentRequest()
-                           .path("/{id}")
-                           .buildAndExpand(novoAluno.getId())
-                           .toUri();
+    @GetMapping("students/{id}")
+    public ResponseEntity<Aluno> getAlunoById(@PathVariable int id) {
+        return ResponseEntity.ok(service.getAlunoById(id));
+    }
 
-            return ResponseEntity.created(location).body(novoAluno);
+    @PostMapping("students")
+    public ResponseEntity<Aluno> save(@RequestBody AlunoRequest aluno) {
+        Aluno novoAluno = service.save(aluno);
 
-      }
+        URI location = ServletUriComponentsBuilder
+                       .fromCurrentRequest()
+                       .path("/{id}")
+                       .buildAndExpand(novoAluno.getId())
+                       .toUri();
 
-      @DeleteMapping("students/{id}")
-      public ResponseEntity<Void> deleteById(@PathVariable int id){
-          service.deleteById(id);
-          return ResponseEntity.noContent().build();
-      }
+        return ResponseEntity.created(location).body(novoAluno);
+    }
 
-      @PutMapping("students/{id}")
-      public ResponseEntity<Void> update(@PathVariable int id, @RequestBody AlunoRequest aluno){
-          service.update(id, aluno);
-          return ResponseEntity.ok().build();
-      }
+    @DeleteMapping("students/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable int id) {
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 
+    @PutMapping("students/{id}")
+    public ResponseEntity<Void> update(@PathVariable int id, @RequestBody AlunoRequest aluno) {
+        service.update(id, aluno);
+        return ResponseEntity.ok().build();
+    }
 }
