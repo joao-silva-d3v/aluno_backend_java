@@ -21,14 +21,14 @@ public class AlunoService {
 
     public List<AlunoResponse> getAlunos(){
         return repository.findAll()
-        .stream()
-        .map(aluno -> AlunoMapper.toDto(aluno))
-        .toList();
+                         .stream()
+                         .map(aluno -> AlunoMapper.toDto(aluno))
+                         .toList();
     }
 
     public Aluno getAlunoById(int id){
         return repository.findById(id).orElseThrow(
-            () -> new EntityNotFoundException("Aluno não está cadastrado!")
+            () -> new EntityNotFoundException("Aluno não cadastrado!")
         );
     }
 
@@ -41,7 +41,7 @@ public class AlunoService {
             repository.deleteById(id);
         }
         else{
-            throw new EntityNotFoundException("Aluno não está cadastrado");
+            throw new EntityNotFoundException("Aluno não cadastrado");
         }
     }
 

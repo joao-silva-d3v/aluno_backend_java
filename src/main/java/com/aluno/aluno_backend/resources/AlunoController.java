@@ -13,7 +13,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.aluno.aluno_backend.dtos.AlunoRequest;
 import com.aluno.aluno_backend.dtos.AlunoResponse;
@@ -22,48 +21,45 @@ import com.aluno.aluno_backend.services.AlunoService;
 
 @RestController
 public class AlunoController {
+      
+      @Autowired
+      private AlunoService service;
 
-    @Autowired
-    private AlunoService service;
-
-    @GetMapping("students")
-    public ResponseEntity<List<AlunoResponse>> getAlunos() {
-        List<AlunoResponse> alunos = service.getAlunos(); 
+     
+      @GetMapping("students")
+      public ResponseEntity<List<AlunoResponse>> getAlunos(){
+         return ResponseEntity.ok(service.getAlunos());
+      }
     
-        List<AlunoResponse> alunoResponses = alunos.stream()
-            .map(aluno -> new AlunoResponse(aluno.getId(), aluno.name(), aluno.active(), aluno.period())) 
-            .collect(Collectors.toList());
-        
-        return ResponseEntity.ok(alunoResponses);
-    }
+      @GetMapping("students/{id}")
+      public ResponseEntity<Aluno> getAlunoById(@PathVariable int id){
+         return ResponseEntity.ok(service.getAlunoById(id));
+      }
+   
+      @PostMapping("students")
+      public ResponseEntity<Aluno> save(@RequestBody AlunoRequest aluno){
+            Aluno novoAluno = service.save(aluno);
 
-    @GetMapping("students/{id}")
-    public ResponseEntity<Aluno> getAlunoById(@PathVariable int id) {
-        return ResponseEntity.ok(service.getAlunoById(id));
-    }
+            URI location = ServletUriComponentsBuilder
+                           .fromCurrentRequest()
+                           .path("/{id}")
+                           .buildAndExpand(novoAluno.getId())
+                           .toUri();
 
-    @PostMapping("students")
-    public ResponseEntity<Aluno> save(@RequestBody AlunoRequest aluno) {
-        Aluno novoAluno = service.save(aluno);
+            return ResponseEntity.created(location).body(novoAluno);
 
-        URI location = ServletUriComponentsBuilder
-                       .fromCurrentRequest()
-                       .path("/{id}")
-                       .buildAndExpand(novoAluno.getId())
-                       .toUri();
+      }
 
-        return ResponseEntity.created(location).body(novoAluno);
-    }
+      @DeleteMapping("students/{id}")
+      public ResponseEntity<Void> deleteById(@PathVariable int id){
+          service.deleteById(id);
+          return ResponseEntity.noContent().build();
+      }
 
-    @DeleteMapping("students/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable int id) {
-        service.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
+      @PutMapping("students/{id}")
+      public ResponseEntity<Void> update(@PathVariable int id, @RequestBody AlunoRequest aluno){
+          service.update(id, aluno);
+          return ResponseEntity.ok().build();
+      }
 
-    @PutMapping("students/{id}")
-    public ResponseEntity<Void> update(@PathVariable int id, @RequestBody AlunoRequest aluno) {
-        service.update(id, aluno);
-        return ResponseEntity.ok().build();
-    }
 }

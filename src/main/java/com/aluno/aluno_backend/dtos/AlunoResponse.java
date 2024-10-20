@@ -6,11 +6,5 @@ public record AlunoResponse(
     Boolean active,
     String period
 ) {
-
-    public Integer getId() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getId'");
-    }
-    
     
 }
